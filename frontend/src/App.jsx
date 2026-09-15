@@ -1,6 +1,6 @@
 import { useState } from "react";
-import TopicInput from "./components/TopicInput";
-import IdeaList from "./components/IdeaList";
+import TopicInput from "./Components/TopicInput";
+import IdeaList from "./Components/IdeaList";
 import { generatePostIdeas } from "./api/api";
 
 function App() {
