@@ -29,7 +29,20 @@ function App() {
             setIdeas(ideasWithSelectionState);
         } catch (error) {
             console.error(error);
-            setError("Unable to generate ideas. Please try again.");
+
+            if (error.status === 429) {
+                setError(
+                    "You can generate ideas only once every 10 minutes. Please try again later."
+                );
+            } else if (error.status >= 500) {
+                setError(
+                    "Something went wrong on the server. Please try again later."
+                );
+            } else {
+                setError(
+                    "Unable to generate ideas. Please try again."
+                );
+            }
         } finally {
             setLoading(false);
         }

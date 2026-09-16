@@ -8,8 +8,13 @@ export async function generatePostIdeas(topic) {
         },
         body: JSON.stringify({ topic }),
     });
+
     if (!response.ok) {
-        throw new Error("Failed to generate post ideas");
+        const error = new Error("Failed to generate post ideas");
+        error.status = response.status;
+
+        throw error;
     }
+
     return response.json();
 }

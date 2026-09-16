@@ -3,6 +3,9 @@ package com.madhukar.lip.controller;
 import com.madhukar.lip.dto.PostIdeaRequest;
 import com.madhukar.lip.dto.PostIdeaResponse;
 import com.madhukar.lip.service.PostIdeaService;
+import com.madhukar.lip.service.RateLimitService;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -13,17 +16,31 @@ import java.util.List;
 public class PostIdeaController {
 
     private final PostIdeaService postIdeaService;
+    private final RateLimitService rateLimitService;
 
-    public PostIdeaController(PostIdeaService postIdeaService) {
+    public PostIdeaController(
+            PostIdeaService postIdeaService,
+            RateLimitService rateLimitService) {
+
         this.postIdeaService = postIdeaService;
+        this.rateLimitService = rateLimitService;
     }
 
     @PostMapping
     public ResponseEntity<List<PostIdeaResponse>> generateIdeas(
-            @RequestBody PostIdeaRequest request) {
+            HttpServletRequest request,
+            @RequestBody PostIdeaRequest body) {
+
+        String clientIp = request.getRemoteAddr();
+
+        if (!rateLimitService.isAllowed(clientIp)) {
+            return ResponseEntity
+                    .status(HttpStatus.TOO_MANY_REQUESTS)
+                    .build();
+        }
 
         return ResponseEntity.ok(
-                postIdeaService.generateIdeas(request.topic())
+                postIdeaService.generateIdeas(body.topic())
         );
     }
 }
