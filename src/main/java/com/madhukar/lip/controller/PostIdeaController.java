@@ -5,6 +5,8 @@ import com.madhukar.lip.dto.PostIdeaResponse;
 import com.madhukar.lip.service.PostIdeaService;
 import com.madhukar.lip.service.RateLimitService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +16,8 @@ import java.util.List;
 @RequestMapping("/api/post-ideas")
 @CrossOrigin(origins = "http://localhost:5173")
 public class PostIdeaController {
+    private static final Logger log =
+            LoggerFactory.getLogger(PostIdeaController.class);
 
     private final PostIdeaService postIdeaService;
     private final RateLimitService rateLimitService;
@@ -33,10 +37,10 @@ public class PostIdeaController {
 
         String clientIp = request.getHeader("X-Real-IP");
 
-        System.out.println("X-Real-IP: " + request.getHeader("X-Real-IP"));
-        System.out.println("Remote Address: " + request.getRemoteAddr());
-        System.out.println("X-Forwarded-For: " + request.getHeader("X-Forwarded-For"));
-        System.out.println("Rate Limit IP: " + clientIp);
+        log.info("X-Real-IP: {}", request.getHeader("X-Real-IP"));
+        log.info("Remote Address: {}", request.getRemoteAddr());
+        log.info("X-Forwarded-For: {}", request.getHeader("X-Forwarded-For"));
+        log.info("Rate Limit IP: {}", clientIp);
 
         if (clientIp == null || clientIp.isBlank()) {
             clientIp = request.getRemoteAddr();
