@@ -31,7 +31,11 @@ public class PostIdeaController {
             HttpServletRequest request,
             @RequestBody PostIdeaRequest body) {
 
-        String clientIp = request.getRemoteAddr();
+        String clientIp = request.getHeader("X-Real-IP");
+
+        if (clientIp == null || clientIp.isBlank()) {
+            clientIp = request.getRemoteAddr();
+        }
 
         if (!rateLimitService.isAllowed(clientIp)) {
             return ResponseEntity
