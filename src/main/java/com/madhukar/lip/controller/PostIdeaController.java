@@ -33,6 +33,11 @@ public class PostIdeaController {
 
         String clientIp = request.getHeader("X-Real-IP");
 
+        System.out.println("X-Real-IP: " + request.getHeader("X-Real-IP"));
+        System.out.println("Remote Address: " + request.getRemoteAddr());
+        System.out.println("X-Forwarded-For: " + request.getHeader("X-Forwarded-For"));
+        System.out.println("Rate Limit IP: " + clientIp);
+
         if (clientIp == null || clientIp.isBlank()) {
             clientIp = request.getRemoteAddr();
         }
